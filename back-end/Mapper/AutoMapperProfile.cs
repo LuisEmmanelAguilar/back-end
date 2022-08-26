@@ -78,6 +78,38 @@ namespace back_end.Mapper
             return resultado;
         }
 
+        private List<GeneroDTO> MapearPeliculasGeneros(Pelicula pelicula, PeliculaDTO peliculaDTO)
+        {
+            var resultado = new List<GeneroDTO>();
+
+            if(pelicula.PeliculasGeneros != null)
+            {
+                foreach(var genero in pelicula.PeliculasGeneros)
+                {
+                    resultado.Add(new GeneroDTO() { Id = genero.GeneroId, Nombre = genero.Genero.Nombre });
+                }
+            }
+
+            return resultado;
+        }
+
+        private List<PeliculasActores> MapearPeliculasActores(PeliculaCreacionDTO peliculaCreacionDTO, Pelicula pelicula)
+        {
+            var resultado = new List<PeliculasActores>();
+
+            if(peliculaCreacionDTO.Actores == null)
+            {
+                return resultado;
+            }
+
+            foreach(var actor in peliculaCreacionDTO.Actores)
+            {
+                resultado.Add(new PeliculasActores() { ActorId = actor.Id, Personaje = actor.Personaje });
+            }
+
+            return resultado;
+        }
+
         private List<PeliculasGeneros> MapearPeliculasGeneros(PeliculaCreacionDTO peliculaCreacionDTO, Pelicula pelicula)
         {
             var resultado = new List<PeliculasGeneros>();

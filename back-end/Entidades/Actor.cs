@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using back_end.Validaciones;
+using System.ComponentModel.DataAnnotations;
 
 namespace back_end.Entidades
 {
@@ -8,6 +9,7 @@ namespace back_end.Entidades
 
         [Required]
         [StringLength(maximumLength: 200)]
+        [PrimeraLetraMayuscula]
         public string Nombre { get; set; }
         public string Biografia { get; set; }
         public DateTime FechaNacimiento { get; set; }

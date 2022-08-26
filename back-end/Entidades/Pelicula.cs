@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using back_end.Validaciones;
+using System.ComponentModel.DataAnnotations;
 
 namespace back_end.Entidades
 {
@@ -8,6 +9,7 @@ namespace back_end.Entidades
 
         [Required]
         [StringLength(maximumLength: 300)]
+        [PrimeraLetraMayuscula]
         public string Titulo { get; set; }
         public string Resumen { get; set; }
         public string Trailer { get; set; }

@@ -1,4 +1,5 @@
-﻿using NetTopologySuite.Geometries;
+﻿using back_end.Validaciones;
+using NetTopologySuite.Geometries;
 using System.ComponentModel.DataAnnotations;
 
 namespace back_end.Entidades
@@ -9,6 +10,7 @@ namespace back_end.Entidades
 
         [Required]
         [StringLength(maximumLength: 75)]
+        [PrimeraLetraMayuscula]
         public string Nombre { get; set; }
         public Point Ubicacion { get; set; }
         public List<PeliculasCines> PeliculasCines { get; set; }
