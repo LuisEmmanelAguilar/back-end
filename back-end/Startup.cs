@@ -1,6 +1,10 @@
 ﻿using AutoMapper;
 using back_end.Data;
+using back_end.Filtros;
+using back_end.Interfaces;
 using back_end.Mapper;
+using back_end.Utilidades;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using NetTopologySuite;
@@ -10,7 +14,7 @@ namespace back_end
 {
     public class Startup
     {
-        private readonly IConfiguration _configuration;
+        public IConfiguration _configuration { get; }
 
         public Startup(IConfiguration configuration)
         {
@@ -20,6 +24,7 @@ namespace back_end
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddAutoMapper(typeof(Startup));
+         
             services.AddSingleton(provider =>
                 new MapperConfiguration(config =>
                 {
@@ -29,13 +34,33 @@ namespace back_end
 
             services.AddSingleton<GeometryFactory>(NtsGeometryServices.Instance.CreateGeometryFactory(srid: 4326));
 
+            services.AddTransient<IAlmacenadorArchivos, AlmacenadorAzureStorage>();
+
             services.AddHttpContextAccessor();
 
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(_configuration.GetConnectionString("defaultConnection"),
                 sqlServer => sqlServer.UseNetTopologySuite()));
 
-            services.AddControllers();
+            services.AddCors(options =>
+            {
+                var frontendURL = _configuration.GetValue<string>("frontend_url");
+                
+                options.AddDefaultPolicy(builder =>
+                {
+                    builder.WithOrigins(frontendURL)
+                        .AllowAnyMethod()
+                        .AllowAnyHeader()
+                        .WithExposedHeaders(new string[] { "cantidadTotalRegistros" });
+                });
+            });
+
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer();
+
+            services.AddControllers(options =>
+            {
+                options.Filters.Add(typeof(FiltroDeExcepcion));
+            });
 
             services.AddSwaggerGen(c =>
             {
